@@ -1,0 +1,125 @@
+%YAML 1.2
+---
+name: ACTION!
+file_extensions: [act]
+scope: source.action
+
+variables:
+  base_type: '\b(ARRAY|BYTE|POINTER|CARD|CHAR|INT)\b'
+
+  decimal: '\b(-)?[0-9.]+\b'
+  hexadecimal: '\$[0-9a-fA-F]+'
+
+  pointers: '([@][a-zA-Z0-9]+)'
+
+  reserved: '\b(AND|FI|OR|UNTIL|FOR|WHILE|FUNC|PROC|XOR|IF|RETURN|INCLUDE|RSH|DEFINE|SET|DO|LSH|STEP|ELSE|MOD|THEN|ELSEIF|MODULE|TO|EXIT|OD|TYPE)\b'
+
+  procedures: '\b(Print|PrintE|PrintD|PrintDE|PrintB|PrintBE|PrintBD|PrintBDE|PrintC|PrintCE|PrintCD|PrintCDE|PrintI|PrintIE|PrintID|PrintIDE|Put|PutE|PutD|PutDE|InputS|InputSD|InputMD|Open|Close|XIO|Note|Point|Graphics|SetColor|Plot|DrawTo|Fill|Position|Sound|SndRst|SCopy|SCopyS|SAssign|StrB|StrC|StrI|Break|Error|Zero|SetBlock|MoveBlock)\b'
+  functions: '\b(InputB|InputC|InputI|InputBD|InpuCD|InputID|GetD|Locate|Paddle|PTrig|Stick|STrig|SCompare|ValB|ValC|ValI|Rand|Peek|PeekC|Poke|PokeC)\b'
+
+contexts:
+  main:
+    - include: comment
+    - include: double-quote
+    - include: library-functions
+    - include: library-procedures
+    - include: function-call
+    - include: reserved-keywords
+    - include: base-types
+    - include: operators-arithmetic
+    - include: operators-bitwise
+    - include: operators-augmented
+    - include: operators-equality
+    - include: operators-assignment
+    - include: numbers-decimal
+    - include: numbers-hexadecimal
+    - include: pointer-call
+
+
+  comment:
+    - match: ';'
+      scope: punctuation.definition.comment.action
+      push:
+        - meta_scope: comment.line.action
+        - match: $
+          pop: true
+
+  double-quote:
+    - match: '"'
+      scope: punctuation.definition.string.begin.action
+      push:
+        - meta_scope: string.quoted.double.action
+        - match: \\.
+          scope: constant.character.escape.action
+        - match: '"'
+          scope: punctuation.definition.string.end.action
+          pop: true
+
+  function-call:
+    - match: (\w+)\s*(?=\()
+      captures:
+        0: meta.function-call.action
+        1: variable.function.builtin.action
+      push: function-call-arguments
+
+  function-call-arguments:
+    - match: \(
+      scope: punctuation.section.parameters.begin.action
+      set:
+        - meta_scope: meta.function-call.parameters.action
+        - match: \)
+          scope: punctuation.section.parameters.end.action
+          pop: true
+        - match: ','
+          scope: punctuation.separator.parameters.action
+        - include: main
+
+  # Library functions
+  library-functions:
+    - match: '{{functions}}'
+      scope: comment.line.action
+
+  # Reserved keywords
+  reserved-keywords:
+    - match: '{{reserved}}'
+      scope: keyword.control.action
+
+  # Reserved keywords
+  base-types:
+    - match: '{{base_type}}'
+      scope: keyword.control.action
+
+  operators-arithmetic:
+    - match: (\+|-|\*|/|%|<|>|<>)
+      scope: keyword.operator.arithmetic.action
+
+  operators-bitwise:
+    - match: (&|\||!|\^|>>|<<)
+      scope: keyword.operator.bitwise.action
+
+  operators-augmented:
+    - match: ==(\+|-|\*|/|%|&|\||\^|>>|<<|\.|\?\?)
+      scope: keyword.operator.assignment.augmented.action
+
+  operators-equality:
+    - match: (\+|-|\*|/|%|&|\||\^|>>|<<|\.|\?\?)=
+      scope: keyword.operator.assignment.augmented.action
+
+  operators-assignment:
+    - match: "="
+      scope: keyword.operator.assignment.action
+
+  # Numbers - decimal
+  numbers-decimal:
+    - match: '{{decimal}}'
+      scope: constant.numeric.action
+
+  #Numbers - decimal
+  numbers-hexadecimal:
+    - match: '{{hexadecimal}}'
+      scope: constant.numeric.action
+
+  pointer-call:
+    - match: '{{pointers}}'
+      scope: keyword.operator.assignment.action
+
