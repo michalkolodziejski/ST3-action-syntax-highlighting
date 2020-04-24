@@ -90,7 +90,7 @@ contexts:
       scope: keyword.control.action
 
   operators-arithmetic:
-    - match: (\+|-|\*|/|%|<|>|<>)
+    - match: (\+|-|\*|/|%|<|>|<>|#)
       scope: keyword.operator.arithmetic.action
 
   operators-bitwise:
