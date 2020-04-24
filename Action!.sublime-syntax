@@ -23,9 +23,9 @@ contexts:
     - include: double-quote
     - include: library-functions
     - include: library-procedures
+    - include: function-call
     - include: reserved-keywords
     - include: base-types
-    - include: function-call
     - include: operators-arithmetic
     - include: operators-bitwise
     - include: operators-augmented
@@ -90,7 +90,7 @@ contexts:
       scope: keyword.control.action
 
   operators-arithmetic:
-    - match: (\+|-|\*|/|%|<|>|<>)
+    - match: (\+|-|\*|/|%|<|>|<>|#)
       scope: keyword.operator.arithmetic.action
 
   operators-bitwise:
