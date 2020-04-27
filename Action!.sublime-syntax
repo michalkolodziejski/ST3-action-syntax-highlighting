@@ -17,6 +17,8 @@ variables:
   procedures: '\b(Print|PrintE|PrintD|PrintDE|PrintB|PrintBE|PrintBD|PrintBDE|PrintC|PrintCE|PrintCD|PrintCDE|PrintI|PrintIE|PrintID|PrintIDE|Put|PutE|PutD|PutDE|InputS|InputSD|InputMD|Open|Close|XIO|Note|Point|Graphics|SetColor|Plot|DrawTo|Fill|Position|Sound|SndRst|SCopy|SCopyS|SAssign|StrB|StrC|StrI|Break|Error|Zero|SetBlock|MoveBlock)\b'
   functions: '\b(InputB|InputC|InputI|InputBD|InpuCD|InputID|GetD|Locate|Paddle|PTrig|Stick|STrig|SCompare|ValB|ValC|ValI|Rand|Peek|PeekC|Poke|PokeC)\b'
 
+  identifiers: '[A-Za-z_][A-Za-z_0-9]*'
+
 contexts:
   main:
     - include: comment
@@ -34,6 +36,7 @@ contexts:
     - include: numbers-decimal
     - include: numbers-hexadecimal
     - include: pointer-call
+    - include: identifiers
 
 
   comment:
@@ -91,23 +94,23 @@ contexts:
 
   operators-arithmetic:
     - match: (\+|-|\*|/|%|<|>|<>|#)
-      scope: keyword.operator.arithmetic.action
+      scope: keyword.operator.action
 
   operators-bitwise:
     - match: (&|\||!|\^|>>|<<)
-      scope: keyword.operator.bitwise.action
+      scope: keyword.operator.action
 
   operators-augmented:
     - match: ==(\+|-|\*|/|%|&|\||\^|>>|<<|\.|\?\?)
-      scope: keyword.operator.assignment.augmented.action
+      scope: keyword.operator.action
 
   operators-equality:
     - match: (\+|-|\*|/|%|&|\||\^|>>|<<|\.|\?\?)=
-      scope: keyword.operator.assignment.augmented.action
+      scope: keyword.operator.action
 
   operators-assignment:
     - match: "="
-      scope: keyword.operator.assignment.action
+      scope: keyword.operator.action
 
   # Numbers - decimal
   numbers-decimal:
@@ -121,5 +124,8 @@ contexts:
 
   pointer-call:
     - match: '{{pointers}}'
-      scope: keyword.operator.assignment.action
+      scope: keyword.operator.action
 
+  identifiers:
+    - match: '\b{{identifiers}}\b'
+      scope: string.other.action
