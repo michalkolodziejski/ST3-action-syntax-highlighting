@@ -10,8 +10,6 @@ variables:
   decimal: '\b(-)?[0-9.]+\b'
   hexadecimal: '\$[0-9a-fA-F]+'
 
-  pointers: '([@][a-zA-Z0-9]+)'
-
   reserved: '\b(AND|FI|OR|UNTIL|FOR|WHILE|FUNC|PROC|XOR|IF|RETURN|INCLUDE|RSH|DEFINE|SET|DO|LSH|STEP|ELSE|MOD|THEN|ELSEIF|MODULE|TO|EXIT|OD|TYPE)\b'
 
   procedures: '\b(Print|PrintE|PrintD|PrintDE|PrintB|PrintBE|PrintBD|PrintBDE|PrintC|PrintCE|PrintCD|PrintCDE|PrintI|PrintIE|PrintID|PrintIDE|Put|PutE|PutD|PutDE|InputS|InputSD|InputMD|Open|Close|XIO|Note|Point|Graphics|SetColor|Plot|DrawTo|Fill|Position|Sound|SndRst|SCopy|SCopyS|SAssign|StrB|StrC|StrI|Break|Error|Zero|SetBlock|MoveBlock)\b'
@@ -28,14 +26,13 @@ contexts:
     - include: reserved-keywords
     - include: base-types
     - include: function-call
-    - include: operators-arithmetic
+    - include: operators-basic
     - include: operators-bitwise
     - include: operators-augmented
     - include: operators-equality
     - include: operators-assignment
     - include: numbers-decimal
     - include: numbers-hexadecimal
-    - include: pointer-call
     - include: identifiers
 
 
@@ -92,8 +89,8 @@ contexts:
     - match: '{{base_type}}'
       scope: keyword.control.action
 
-  operators-arithmetic:
-    - match: (\+|-|\*|/|%|<|>|<>|#)
+  operators-basic:
+    - match: (\+|-|\*|/|%|<|>|<>|#|@)
       scope: keyword.operator.action
 
   operators-bitwise:
@@ -121,10 +118,6 @@ contexts:
   numbers-hexadecimal:
     - match: '{{hexadecimal}}'
       scope: constant.numeric.action
-
-  pointer-call:
-    - match: '{{pointers}}'
-      scope: keyword.operator.action
 
   identifiers:
     - match: '\b{{identifiers}}\b'
