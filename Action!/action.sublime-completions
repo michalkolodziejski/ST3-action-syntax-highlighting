@@ -1,0 +1,103 @@
+{
+    "scope": "source.action",
+
+    "completions": [
+        // Keywords 
+
+        // MOD|THEN|ELSEIF|MODULE|TO|EXIT|OD|TYPE
+        {
+            "trigger": "AND",
+            "contents": "AND",
+            "kind": "keyword"
+        },
+        {
+            "trigger": "FI",
+            "contents": "FI",
+            "kind": "keyword"
+        },
+{
+            "trigger": "OR",
+            "contents": "OR",
+            "kind": "keyword"
+        },{
+            "trigger": "UNTIL",
+            "contents": "UNTIL",
+            "kind": "keyword"
+        },{
+            "trigger": "FOR",
+            "contents": "FOR",
+            "kind": "keyword"
+        },{
+            "trigger": "WHILE",
+            "contents": "WHILE",
+            "kind": "keyword"
+        },{
+            "trigger": "FUNC",
+            "contents": "FUNC",
+            "kind": "keyword"
+        },{
+            "trigger": "PROC",
+            "contents": "PROC",
+            "kind": "keyword"
+        },{
+            "trigger": "XOR",
+            "contents": "XOR",
+            "kind": "keyword"
+        },{
+            "trigger": "IF",
+            "contents": "IF",
+            "kind": "keyword"
+        },{
+            "trigger": "RETURN",
+            "contents": "RETURN",
+            "kind": "keyword"
+        },{
+            "trigger": "INCLUDE",
+            "contents": "INCLUDE",
+            "kind": "keyword"
+        },{
+            "trigger": "RSH",
+            "contents": "RSH",
+            "kind": "keyword"
+        },{
+            "trigger": "DEFINE",
+            "contents": "DEFINE",
+            "kind": "keyword"
+        },{
+            "trigger": "SET",
+            "contents": "SET",
+            "kind": "keyword"
+        },{
+            "trigger": "DO",
+            "contents": "DO",
+            "kind": "keyword"
+        },{
+            "trigger": "LSH",
+            "contents": "LSH",
+            "kind": "keyword"
+        },{
+            "trigger": "STEP",
+            "contents": "STEP",
+            "kind": "keyword"
+        },{
+            "trigger": "ELSE",
+            "contents": "ELSE",
+            "kind": "keyword"
+        },{
+            "trigger": "FI",
+            "contents": "FI",
+            "kind": "keyword"
+        },
+
+        {
+            "trigger": "Appendable",
+            "contents": "Appendable",
+            "kind": ["type", "i", "Interface"]
+        },
+        {
+            "trigger": "Boolean",
+            "contents": "Boolean",
+            "kind": ["type", "c", "Class"]
+        }
+    ]
+}

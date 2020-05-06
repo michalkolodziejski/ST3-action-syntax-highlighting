@@ -1,43 +1,59 @@
 %YAML 1.2
 ---
-name: ACTION!
+name: Action!
 file_extensions: [act]
 scope: source.action
 
 variables:
-  base_type: '\b(ARRAY|BYTE|POINTER|CARD|CHAR|INT)\b'
+  base_type: '(?i)\b(ARRAY|BYTE|POINTER|CARD|CHAR|INT)\b'
 
   decimal: '\b(-)?[0-9.]+\b'
-  hexadecimal: '\$[0-9a-fA-F]+'
+  hexadecimal: '("?)\$[0-9a-fA-F]+("?)'
 
-  pointers: '([@][a-zA-Z0-9]+)'
+  reserved: '(?i)\b(AND|FI|OR|UNTIL|FOR|WHILE|FUNC|PROC|XOR|IF|RETURN|INCLUDE|RSH|DEFINE|SET|DO|LSH|STEP|ELSE|MOD|THEN|ELSEIF|MODULE|TO|EXIT|OD|TYPE)\b'
 
-  reserved: '\b(AND|FI|OR|UNTIL|FOR|WHILE|FUNC|PROC|XOR|IF|RETURN|INCLUDE|RSH|DEFINE|SET|DO|LSH|STEP|ELSE|MOD|THEN|ELSEIF|MODULE|TO|EXIT|OD|TYPE)\b'
+  procedures: '(?i)\b(Print|PrintE|PrintD|PrintDE|PrintB|PrintBE|PrintBD|PrintBDE|PrintC|PrintCE|PrintCD|PrintCDE|PrintI|PrintIE|PrintID|PrintIDE|Put|PutE|PutD|PutDE|InputS|InputSD|InputMD|Open|Close|XIO|Note|Point|Graphics|SetColor|Plot|DrawTo|Fill|Position|Sound|SndRst|SCopy|SCopyS|SAssign|StrB|StrC|StrI|Break|Error|Zero|SetBlock|MoveBlock)\b'
+  functions: '(?i)\b(InputB|InputC|InputI|InputBD|InpuCD|InputID|GetD|Locate|Paddle|PTrig|Stick|STrig|SCompare|ValB|ValC|ValI|Rand|Peek|PeekC|Poke|PokeC)\b'
 
-  procedures: '\b(Print|PrintE|PrintD|PrintDE|PrintB|PrintBE|PrintBD|PrintBDE|PrintC|PrintCE|PrintCD|PrintCDE|PrintI|PrintIE|PrintID|PrintIDE|Put|PutE|PutD|PutDE|InputS|InputSD|InputMD|Open|Close|XIO|Note|Point|Graphics|SetColor|Plot|DrawTo|Fill|Position|Sound|SndRst|SCopy|SCopyS|SAssign|StrB|StrC|StrI|Break|Error|Zero|SetBlock|MoveBlock)\b'
-  functions: '\b(InputB|InputC|InputI|InputBD|InpuCD|InputID|GetD|Locate|Paddle|PTrig|Stick|STrig|SCompare|ValB|ValC|ValI|Rand|Peek|PeekC|Poke|PokeC)\b'
-
-  identifiers: '[A-Za-z_][A-Za-z_0-9]*'
+  identifier: '[A-Za-z_][A-Za-z_0-9]*'
 
 contexts:
   main:
+    - include: global
     - include: comment
-    - include: double-quote
     - include: library-functions
     - include: library-procedures
     - include: reserved-keywords
     - include: base-types
+    - include: functions
     - include: function-call
-    - include: operators-arithmetic
+    - include: operators-basic
     - include: operators-bitwise
     - include: operators-augmented
     - include: operators-equality
     - include: operators-assignment
     - include: numbers-decimal
     - include: numbers-hexadecimal
-    - include: pointer-call
-    - include: identifiers
+    - include: identifier
+    - include: double-quote
 
+  global:
+       # Take care of comments just before a function definition.
+    - match: DEFINE
+      scope: constant.character.action
+      push:
+        - - match: \s*(?=\w)
+            set: reserved-keywords
+            pop: true
+          - match: ""
+            pop: true
+        - - meta_scope: support.constant
+          - match: ^\s*$
+            scope: support.constant
+            pop: true
+          - match: ^\s*(\*)(?!/)
+            captures:
+              1: support.constant
 
   comment:
     - match: ';'
@@ -57,6 +73,31 @@ contexts:
         - match: '"'
           scope: punctuation.definition.string.end.action
           pop: true
+
+  entity-name-function:
+    # - include: magic-function-names
+    # - include: illegal-names
+    - include: generic-names
+
+  generic-names:
+    - match: '{{identifier}}'
+      scope: entity.name.function
+
+  functions:
+      - match: '\b(PROC|FUNC)\b'
+        scope: storage.type.function.action
+        push:
+          - meta_scope: meta.function.action
+          - match: "(?={{identifier}})"
+            push:
+              - meta_content_scope: entity.name.function.python
+              - include: entity-name-function
+              - match: ''
+                pop: true
+      # push:
+      #   - meta_scope: meta.function.action
+      #   pop: true
+#       - include: line-continuation-or-pop
 
   function-call:
     - match: (\w+)\s*(?=\()
@@ -80,7 +121,11 @@ contexts:
   # Library functions
   library-functions:
     - match: '{{functions}}'
-      scope: comment.line.action
+      scope: support.function
+
+  library-procedures:
+    - match: '{{procedures}}'
+      scope: support.function
 
   # Reserved keywords
   reserved-keywords:
@@ -92,8 +137,8 @@ contexts:
     - match: '{{base_type}}'
       scope: keyword.control.action
 
-  operators-arithmetic:
-    - match: (\+|-|\*|/|%|<|>|<>|#)
+  operators-basic:
+    - match: (\+|-|\*|/|%|<|>|<>|#|@)
       scope: keyword.operator.action
 
   operators-bitwise:
@@ -122,10 +167,6 @@ contexts:
     - match: '{{hexadecimal}}'
       scope: constant.numeric.action
 
-  pointer-call:
-    - match: '{{pointers}}'
-      scope: keyword.operator.action
-
-  identifiers:
-    - match: '\b{{identifiers}}\b'
+  identifier:
+    - match: '\b{{identifier}}\b'
       scope: string.other.action
